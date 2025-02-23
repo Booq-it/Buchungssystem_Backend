@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using API.InputDto;
-using Buchungssystem_Backend.Scripts;
-using Buchungssystem_Backend.Classes;
+using Backend.Scripts;
+using Backend.Classes;
 using Microsoft.OpenApi.Models;
 
 

@@ -1,4 +1,4 @@
-﻿namespace Buchungssystem_Backend.Scripts;
+﻿namespace Backend.Scripts;
 using System.Data.SQLite;
 
 public class DB_Connect

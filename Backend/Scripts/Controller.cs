@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Buchungssystem_Backend.Classes;
+using Backend.Classes;
 
 namespace Buchungssystem_Backend.Scripts
 {
@@ -9,7 +9,6 @@ namespace Buchungssystem_Backend.Scripts
         public User Login(string email, string password)
         {
             
-
             return null;
         }
 
@@ -17,5 +16,17 @@ namespace Buchungssystem_Backend.Scripts
         {
             return 0;
         }
+
+
+        public List<Showing> GetShowings()
+        {
+            return new List<Showing>
+    {
+                new Showing {},
+                new Showing {}
+            };
+        }
+
+
     }
 }

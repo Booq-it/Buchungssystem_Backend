@@ -1,5 +1,5 @@
 ﻿
-namespace Buchungssystem_Backend.Classes
+namespace Backend.Classes
 {
     public class User
     {

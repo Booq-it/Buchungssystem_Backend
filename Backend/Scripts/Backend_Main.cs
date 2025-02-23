@@ -1,5 +1,5 @@
 ﻿
-namespace Buchungssystem_Backend.Scripts;
+namespace Backend.Scripts;
 public class Backend_Main
 {
     public static void Main(string[] args)

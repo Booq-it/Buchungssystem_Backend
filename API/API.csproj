@@ -5,12 +5,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Backend\Buchungssystem_Backend.csproj">
-      <Aliases>Backend</Aliases>
-    </ProjectReference>
+    <ProjectReference Include="..\Backend\Backend.csproj" />
   </ItemGroup>
 </Project>

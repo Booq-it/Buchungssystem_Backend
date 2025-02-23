@@ -1,31 +1,40 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using API.InputDto;
-using Backend.Scripts;
-using Backend.Classes;
-using User = Backend.Classes.User;
+using Buchungssystem_Backend.Scripts;
+using Buchungssystem_Backend.Classes;
+using Microsoft.OpenApi.Models;
+
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
-    [APIController]
+    [ApiController]
     public class LoginController : ControllerBase
     {
         [HttpPost("LoginUser")]
-        public async Task<ActionResult<string>> LoginUser(LoginDto loginDto)
+        public ActionResult<string> LoginUser(LoginDto loginDto)
         {
-            Backend.Scripts.Controller controller = new Backend.Scripts.Controller();
+            Buchungssystem_Backend.Scripts.Controller controller = new Buchungssystem_Backend.Scripts.Controller();
 
             User user = controller.Login(loginDto.email, loginDto.password);
 
             if(user == null)
             {
-                return Unauthorized();
+                return Ok(-1);
             }
 
             return Ok(user);
         }
 
+        [HttpPost("RegisterUser")]
+        public ActionResult<string> RegisterUser(RegisterDto registerDto)
+        {
+            Buchungssystem_Backend.Scripts.Controller controller = new Buchungssystem_Backend.Scripts.Controller();
+
+            int id = controller.Register(registerDto.email, registerDto.password, registerDto.firstname, registerDto.lastname, registerDto.age);
+
+            return Ok(id);
+        }
     }
 }

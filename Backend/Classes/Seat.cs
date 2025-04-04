@@ -8,7 +8,7 @@ namespace Backend.Classes
 {
     public class Seat
     {
-        string m_Type; // or another data type
+        Type m_Type; 
         double m_AdditionalPrice;
         bool m_IsBooked;
     }

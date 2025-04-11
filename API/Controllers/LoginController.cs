@@ -32,7 +32,7 @@ namespace API.Controllers
         {
             Buchungssystem_Backend.Scripts.Controller controller = new Buchungssystem_Backend.Scripts.Controller();
 
-            int id = controller.Register(registerDto.email, registerDto.password, registerDto.firstname, registerDto.lastname, registerDto.age);
+            int id = controller.Register(registerDto.email, registerDto.password, registerDto.firstName, registerDto.lastName, registerDto.age);
 
             return Ok(id);
         }

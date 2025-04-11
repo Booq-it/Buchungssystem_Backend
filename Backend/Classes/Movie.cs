@@ -3,9 +3,9 @@ namespace Backend.Classes
 {
     class Movie
     {
-        int m_FSK;
-        string m_Name;
-        int m_LengtInSecs;
+        int fsk;
+        string name;
+        int lengthInSecs;
 
         public Movie()
         {

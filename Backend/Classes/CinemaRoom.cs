@@ -8,7 +8,7 @@ namespace Backend.Classes
 {
     public class CinemaRoom
     {
-        string m_Name;
+        string name;
         List<Seat> seats;
     }
 }

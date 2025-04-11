@@ -8,11 +8,11 @@ namespace Backend.Classes
 {
     public class Showing
     {
-        CinemaRoom m_Room;
-        Movie m_Movie;
-        bool m_Is3D;
-        DateTime m_Datetime;
-        double m_BasePrice;
+        CinemaRoom room;
+        Movie movie;
+        bool is3D;
+        DateTime datetime;
+        double basePrice;
 
         public Showing()
         {

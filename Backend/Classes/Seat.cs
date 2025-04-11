@@ -8,8 +8,8 @@ namespace Backend.Classes
 {
     public class Seat
     {
-        Type m_Type; 
-        double m_AdditionalPrice;
-        bool m_IsBooked;
+        Type type; 
+        double additionalPrice;
+        bool isBooked;
     }
 }

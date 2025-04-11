@@ -10,13 +10,13 @@ namespace API.Controllers
     public class ShowingController : ControllerBase
     {
         [HttpGet]
-        public IActionResult getShowings()
+        public IActionResult GetShowings()
         {
             Buchungssystem_Backend.Scripts.Controller controller = new Buchungssystem_Backend.Scripts.Controller();
 
-            List<Showing> answer = controller.GetShowings();
+            List<Showing> answers = controller.GetShowings();
 
-            return Ok(answer);
+            return Ok(answers);
         }
     }
 }

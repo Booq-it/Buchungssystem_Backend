@@ -10,7 +10,7 @@ namespace API.Services
     public interface IAuthService
     {
         Task RegisterAsync(RegisterDto dto);
-        Task LoginAsync(LoginDto dto);
+        Task<User> LoginAsync(LoginDto dto);
     }
 
     public class AuthService: IAuthService
@@ -43,12 +43,13 @@ namespace API.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task LoginAsync(LoginDto dto)
+        public async Task<User> LoginAsync(LoginDto dto)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.email == dto.email);
             if (user == null || !VerifyPasswordHash(dto.password, user.passwordHash, user.passwordSalt))
                 throw new InvalidCredentialsException();
-            
+
+            return user;
         }
 
         private void CreatePasswordHash(string password, out byte[] hash, out byte[] salt)

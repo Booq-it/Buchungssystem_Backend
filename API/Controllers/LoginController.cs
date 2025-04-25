@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using API.InputDto;
+using API.Models;
 using API.Services;
 
 namespace API.Controllers
@@ -25,8 +26,8 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
-            await _authService.LoginAsync(dto);
-            return Ok(new { message = "Login was succesful!"});
+            User u = await _authService.LoginAsync(dto);
+            return Ok(new { Guid = u.Id, email = u.email, firstName = u.firstName, lastName = u.lastName, role = u.role});
         }
     }
 }

@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using API.InputDto;
-using Backend.Scripts;
-using Backend.Classes;
-using Microsoft.OpenApi.Models;
-
+using API.Services;
 
 namespace API.Controllers
 {
@@ -12,29 +8,25 @@ namespace API.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        [HttpPost("LoginUser")]
-        public ActionResult<string> LoginUser(LoginDto loginDto)
+        private readonly IAuthService _authService;
+        
+        public LoginController(IAuthService authService)
         {
-            Buchungssystem_Backend.Scripts.Controller controller = new Buchungssystem_Backend.Scripts.Controller();
-
-            User user = controller.Login(loginDto.email, loginDto.password);
-
-            if(user == null)
-            {
-                return Ok(-1);
-            }
-
-            return Ok(user);
+            _authService = authService;
+        }
+        
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterDto dto)
+        {
+            await _authService.RegisterAsync(dto);
+            return Ok(new { message = "Registration was succesful!"});
         }
 
-        [HttpPost("RegisterUser")]
-        public ActionResult<string> RegisterUser(RegisterDto registerDto)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDto dto)
         {
-            Buchungssystem_Backend.Scripts.Controller controller = new Buchungssystem_Backend.Scripts.Controller();
-
-            int id = controller.Register(registerDto.email, registerDto.password, registerDto.firstName, registerDto.lastName, registerDto.age);
-
-            return Ok(id);
+            await _authService.LoginAsync(dto);
+            return Ok(new { message = "Login was succesful!"});
         }
     }
 }

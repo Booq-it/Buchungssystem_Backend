@@ -15,9 +15,9 @@ namespace API.Services
 
     public class AuthService: IAuthService
     {
-        private readonly BackenDbContext _dbContext;
+        private readonly BackendDbContext _dbContext;
 
-        public AuthService(BackenDbContext dbContext)
+        public AuthService(BackendDbContext dbContext)
         {
             _dbContext = dbContext;
         }

@@ -1,5 +1,6 @@
 using API.Data;
 using API.Middlewares;
+using API.Seeder;
 using API.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,15 +8,18 @@ var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 
-builder.Services.AddDbContext<BackenDbContext>(options =>
+builder.Services.AddDbContext<BackendDbContext>(options =>
     options.UseSqlite("Data Source=backend.db"));
 
-// Add services to the container.
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICinemaRoomService, CinemaRoomService>();
+builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IShowingService, ShowingService>();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers().AddJsonOptions(options => { options.JsonSerializerOptions.IncludeFields = true; });
@@ -35,8 +39,11 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<BackenDbContext>();
+    var db = scope.ServiceProvider.GetRequiredService<BackendDbContext>();
     db.Database.Migrate(); 
+    
+    var dbContext = scope.ServiceProvider.GetRequiredService<BackendDbContext>();
+    DbSeeder.Seed(dbContext);
 }
 
 if (app.Environment.IsDevelopment())

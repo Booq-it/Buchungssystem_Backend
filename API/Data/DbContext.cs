@@ -4,9 +4,14 @@ using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
 namespace API.Data;
 
-public class BackenDbContext : DbContext
+public class BackendDbContext : DbContext
 {
-    public BackenDbContext(DbContextOptions<BackenDbContext> options) : base(options) { }
+    public BackendDbContext(DbContextOptions<BackendDbContext> options) : base(options) { }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<CinemaRoom> CinemaRooms { get; set; }
+    public DbSet<Seat> Seats { get; set; }
+    public DbSet<Showing> Showings { get; set; }
+    public DbSet<Movie> Movies { get; set; }
+    public DbSet<Booking> Bookings { get; set; }
 }

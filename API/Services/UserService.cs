@@ -11,9 +11,9 @@ namespace API.Services
 
     public class UserService : IUserService
     {
-        private readonly BackenDbContext _db;
+        private readonly BackendDbContext _db;
 
-        public UserService(BackenDbContext db)
+        public UserService(BackendDbContext db)
         {
             _db = db;
         }

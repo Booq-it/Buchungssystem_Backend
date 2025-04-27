@@ -10,7 +10,7 @@ public class BackendDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<CinemaRoom> CinemaRooms { get; set; }
-    public DbSet<Seat> Seats { get; set; }
+    public DbSet<ShowingSeat> Seats { get; set; }
     public DbSet<Showing> Showings { get; set; }
     public DbSet<Movie> Movies { get; set; }
     public DbSet<Booking> Bookings { get; set; }

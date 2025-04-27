@@ -19,8 +19,15 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
-            await _authService.RegisterAsync(dto);
-            return Ok(new { message = "Registration was succesful!"});
+            if (await _authService.RegisterAsync(dto))
+            {
+                return Ok(new { message = "Registration was succesful!"});
+            }
+            else
+            {
+                return Ok(-1);
+            }
+            
         }
 
         [HttpPost("login")]

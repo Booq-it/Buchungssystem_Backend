@@ -23,6 +23,7 @@ namespace API.Services
         public async Task<List<ShowingDto>> GetAllShowings()
         {
             var shows = await _db.Showings
+                .Include(s => s.Seats)
                 .ToListAsync();
             
             var showings = new List<ShowingDto>();
@@ -37,6 +38,15 @@ namespace API.Services
                     date = show.date,
                     cinemaRoomId = show.CinemaRoomId,
                     movieId = show.MovieId,
+                    seats = show.Seats.Select(s => new ShowingSeatDto
+                    {
+                        id = s.Id,
+                        seatRow = s.seatRow,
+                        seatNumber = s.seatNumber,
+                        type = s.type,
+                        additionalPrice = s.additionalPrice,
+                        isAvailable = s.isAvailable
+                    }).ToList()
                 });
             }
             

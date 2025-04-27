@@ -1,6 +1,5 @@
 
 using API.Data;
-using API.Exceptions;
 using API.InputDto;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +8,7 @@ namespace API.Services
 {
     public interface IAuthService
     {
-        Task RegisterAsync(RegisterDto dto);
+        Task<bool> RegisterAsync(RegisterDto dto);
         Task<User> LoginAsync(LoginDto dto);
     }
 
@@ -22,16 +21,15 @@ namespace API.Services
             _dbContext = dbContext;
         }
 
-        public async Task RegisterAsync(RegisterDto dto)
+        public async Task<bool> RegisterAsync(RegisterDto dto)
         {
             if (await _dbContext.Users.AnyAsync(u => u.email == dto.email))
-                throw new UserAlreadyExistsException(dto.email);
+                return false;
 
             CreatePasswordHash(dto.password, out byte[] hash, out byte[] salt);
 
             var user = new User
             {
-                Id = Guid.NewGuid(),
                 email = dto.email,
                 passwordHash = hash,
                 passwordSalt = salt,
@@ -41,13 +39,15 @@ namespace API.Services
 
             _dbContext.Add(user);
             await _dbContext.SaveChangesAsync();
+            
+            return true;
         }
 
         public async Task<User> LoginAsync(LoginDto dto)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.email == dto.email);
             if (user == null || !VerifyPasswordHash(dto.password, user.passwordHash, user.passwordSalt))
-                throw new InvalidCredentialsException();
+                return null;
 
             return user;
         }

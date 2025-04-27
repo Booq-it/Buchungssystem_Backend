@@ -84,30 +84,9 @@ public class DbSeeder
                 var room = new CinemaRoom
                 {
                     name = $"Saal {i+1}",
-                    seats = new List<Seat>()
+                    totalRows = 5,
+                    seatsPerRow = 10
                 };
-
-                for (char row = 'A'; row <= 'E'; row++) 
-                {
-                    for (int place = 1; place <= 10; place++) 
-                    {
-                        string type = row == 'A' ? "Ermäßigt" :
-                            row == 'E' ? "Premium" : "Regulär";
-
-                        double price = row == 'A' ? -1.7 : 
-                            row == 'E' ? 1.8 : 0;
-                    
-                        room.seats.Add(new Seat
-                        {
-                            seatNumber = $"{row}{place}",
-                            type = type,
-                            additionalPrice = price,
-                            isAvailable = true,
-                            CinemaRoom = room
-                        });
-                    }
-                }
-
                 rooms.Add(room);
             }
         
@@ -129,57 +108,44 @@ public class DbSeeder
                 for (int j = 0; j < 3; j++)
                 {
                     var timeToday = DateTime.Today.AddHours(12 + j * 4);
-                    todayShowings.Add(new Showing
+
+                    var show = new Showing
                     {
                         is3D = j % 2 == 0,
                         basePrice = (j % 2 == 0) ? 13.2 : 11.9,
                         date = timeToday,
-                        MovieId = moviesFromDb[i].Id,
-                        CinemaRoomId = roomsFromDb[i].Id,
-                    });
+                        Movie = moviesFromDb[i],
+                        CinemaRoom = roomsFromDb[i],
+                        Seats = new List<ShowingSeat>()
+                    };
+
+                    for (char row = 'A'; row <= 'E'; row++)
+                    {
+                        for (int place = 1; place <= 10; place++)
+                        {
+                            string type = row == 'A' ? "Ermäßigt" :
+                                row == 'E' ? "Premium" : "Regulär";
+
+                            double price = row == 'A' ? -1.7 :
+                                row == 'E' ? 1.8 : 0;
+
+                            show.Seats.Add(new ShowingSeat()
+                            {
+                                seatRow = row,
+                                seatNumber = place,
+                                type = type,
+                                additionalPrice = price,
+                                isAvailable = true,
+                                Showing = show
+                            });
+                        }
+                    }
+                    todayShowings.Add(show);
                 }
             }
             
             context.Showings.AddRange(todayShowings);
-
-
-            for (int i = 0; i < 5; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    var timeTomorrow = DateTime.Today.AddDays(1).AddHours(12 + j * 4);
-
-                    tomorrowShowings.Add(new Showing
-                    {
-                        is3D = j % 2 == 0,
-                        basePrice = (j % 2 == 0) ? 13.2 : 11.9,
-                        date = timeTomorrow,
-                        MovieId = moviesFromDb[i].Id,
-                        CinemaRoomId = roomsFromDb[i].Id,
-                    });
-                }
-            }
             
-            context.Showings.AddRange(tomorrowShowings);
-
-            for (int i = 0; i < 5; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    var timeAfterTomorrow = DateTime.Today.AddDays(2).AddHours(12 + j * 4);
-
-                    afterTomorrowShowings.Add(new Showing
-                    {
-                        is3D = j % 2 == 0,
-                        basePrice = (j % 2 == 0) ? 13.2 : 11.9,
-                        date = timeAfterTomorrow,
-                        MovieId = moviesFromDb[i].Id,
-                        CinemaRoomId = roomsFromDb[i].Id,
-                    });
-                }
-            }
-
-            context.Showings.AddRange(afterTomorrowShowings);
             context.SaveChanges();
         }
         

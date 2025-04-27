@@ -13,5 +13,5 @@ public class ShowingDto
     
     public int movieId { get; set; }
     
-    public List<BookingDto>? bookings { get; set; }
+    public List<ShowingSeatDto> seats { get; set; }
 }

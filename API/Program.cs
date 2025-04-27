@@ -1,5 +1,4 @@
 using API.Data;
-using API.Middlewares;
 using API.Seeder;
 using API.Services;
 using Microsoft.EntityFrameworkCore;
@@ -54,8 +53,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(MyAllowSpecificOrigins);
 app.UseHttpsRedirection();
-
-app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthorization();
 

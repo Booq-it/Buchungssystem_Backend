@@ -23,22 +23,10 @@ namespace API.Controllers
             var rooms = await _cinemaRoomService.GetAllCinemaRooms();
 
             if (rooms == null)
-                return NotFound("No cinema rooms found!");
+                return Ok(-1);
                 
             return Ok(rooms);
         }
-
-        [HttpGet("GetSeat")]
-        public async Task<IActionResult> GetSeat(GetSeatDto dto)
-        {
-            var seat = await _cinemaRoomService.GetSeat(dto.seatNumber, dto.roomId);
-
-            if (seat == null)
-            {
-                return NotFound("Seat not found!");
-            }
-            
-            return Ok(seat);
-        }
+        
     }
 }

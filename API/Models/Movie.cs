@@ -13,6 +13,6 @@ public class Movie
     
     public bool isFeatured { get; set; }
     
-    ICollection<Showing> Showings { get; set; }
+    public ICollection<Showing> Showings { get; set; }
     
 }

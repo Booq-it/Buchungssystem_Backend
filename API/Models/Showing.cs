@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
+﻿
 namespace API.Models;
 
 public class Showing
@@ -9,12 +8,12 @@ public class Showing
     public double basePrice { get; set; }
     public DateTime date { get; set; }
     
-    [ForeignKey("CinemaRoom")]
     public int CinemaRoomId { get; set; }
     public CinemaRoom CinemaRoom { get; set; }
     
-    [ForeignKey("Movie")]
     public int MovieId { get; set; }
     public Movie Movie { get; set; }
     
+    public ICollection<ShowingSeat> Seats { get; set; }
+    public ICollection<Booking> Bookings { get; set; }
 }

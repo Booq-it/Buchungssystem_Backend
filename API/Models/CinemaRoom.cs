@@ -4,8 +4,8 @@ public class CinemaRoom
 {
     public int Id { get; set; }
     public string name { get; set; }
-    
-    public List<Seat> seats { get; set; } = new();
+    public int totalRows { get; set; }
+    public int seatsPerRow  { get; set; }
     
     public ICollection<Showing> Showings { get; set; }
 }

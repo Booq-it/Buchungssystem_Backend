@@ -1,4 +1,6 @@
-﻿namespace API.OutputDto;
+﻿using API.Models;
+
+namespace API.OutputDto;
 
 public class MovieDto
 {
@@ -10,7 +12,7 @@ public class MovieDto
     public int duration { get; set; }
     public int fsk { get; set; }
     public string description { get; set; }
-    
     public bool isFeatured { get; set; }
+    
     
 }

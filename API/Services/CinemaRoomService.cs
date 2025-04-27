@@ -8,7 +8,6 @@ namespace API.Services
     public interface ICinemaRoomService
     {
         Task<List<CinemaRoomDto>> GetAllCinemaRooms();
-        Task<SeatDto> GetSeat(string seatNumber, int cinemaRoomId);
     }
     
     public class CinemaRoomService : ICinemaRoomService
@@ -19,11 +18,11 @@ namespace API.Services
         {
             _db = db;
         }
-
+        
         public async Task<List<CinemaRoomDto>> GetAllCinemaRooms()
         {
             var rooms = await _db.CinemaRooms
-                .Include(s => s.seats)
+                .Include(s => s.Showings)
                 .ToListAsync();
 
             var cinemaRooms = new List<CinemaRoomDto>();
@@ -34,40 +33,13 @@ namespace API.Services
                 {
                     id = room.Id,
                     name = room.name,
-                    seats = room.seats.Select(s => new SeatDto
-                    {
-                        id = s.Id,
-                        seatNumber = s.seatNumber,
-                        type = s.type,
-                        additionalPrice = s.additionalPrice,
-                        isAvailable = s.isAvailable
-                         
-                    }).ToList()
+                    totalRows = room.totalRows,
+                    seatsPerRow = room.seatsPerRow
                 };
                 cinemaRooms.Add(dto);
             }
             
             return cinemaRooms;
-        }
-
-        public async Task<SeatDto> GetSeat(string seatNumber, int cinemaRoomId)
-        {
-            var seat =  await _db.Seats.FirstOrDefaultAsync(s => s.seatNumber == seatNumber && s.CinemaRoomId == cinemaRoomId);
-
-            if (seat == null) return null;
-            
-            Console.Write(seat.CinemaRoomId);
-            
-            var dto = new SeatDto
-            {
-                id = seat.Id,
-                seatNumber = seat.seatNumber,
-                type = seat.type,
-                additionalPrice = seat.additionalPrice,
-                isAvailable = seat.isAvailable
-            };
-            
-            return dto;
         }
         
     }    

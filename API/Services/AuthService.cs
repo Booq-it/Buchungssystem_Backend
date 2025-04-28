@@ -2,6 +2,7 @@
 using API.Data;
 using API.InputDto;
 using API.Models;
+using API.OutputDto;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services
@@ -10,7 +11,9 @@ namespace API.Services
     {
         Task<bool> RegisterAsync(RegisterDto dto);
         Task<bool> CreateAdminUser(string email, string password, string fName, string lName);
-        Task<User> LoginAsync(LoginDto dto);
+        Task<UserDto> LoginAsync(LoginDto dto);
+        Task<bool> ChangeUserInformation(int userId, string email, string firstName, string lastName);
+        Task<bool> ChangeUserPassword(int userId, string oldPassword, string newPassword);
     }
 
     public class AuthService: IAuthService
@@ -67,13 +70,62 @@ namespace API.Services
             return true;
         }
 
-        public async Task<User> LoginAsync(LoginDto dto)
+        public async Task<UserDto> LoginAsync(LoginDto dto)
         {
-            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.email == dto.email);
+            var user = await _dbContext.Users
+                .Include(b => b.Bookings)
+                .FirstOrDefaultAsync(u => u.email == dto.email);
             if (user == null || !VerifyPasswordHash(dto.password, user.passwordHash, user.passwordSalt))
                 return null;
 
-            return user;
+            return new UserDto
+            {
+                id = user.Id,
+                email = user.email,
+                firstName = user.firstName,
+                lastName = user.lastName,
+                role = user.role,
+                bookingIds = user.Bookings.Select(s => s.Id).ToList()
+            };
+        }
+        
+        public async Task<bool> ChangeUserInformation(int userId, string email, string firstName, string lastName)
+        {
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+                return false;
+            
+            user.email = email;
+            user.firstName = firstName;
+            user.lastName = lastName;
+            
+            _dbContext.Update(user);
+            await _dbContext.SaveChangesAsync();
+            
+            return true;
+        }
+
+        public async Task<bool> ChangeUserPassword(int userId, string oldPassword, string newPassword)
+        {
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+                return false;
+
+            if (VerifyPasswordHash(oldPassword, user.passwordHash, user.passwordSalt))
+            {
+                CreatePasswordHash(newPassword, out byte[] hash, out byte[] salt);
+                user.passwordHash = hash;
+                user.passwordSalt = salt;
+                
+                _dbContext.Update(user);
+                await _dbContext.SaveChangesAsync();
+                
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private void CreatePasswordHash(string password, out byte[] hash, out byte[] salt)

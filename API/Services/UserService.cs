@@ -33,7 +33,7 @@ namespace API.Services
             {
                 userDtos.Add(new UserDto
                 {
-                    Id = user.Id,
+                    id = user.Id,
                     email = user.email,
                     firstName = user.firstName,
                     lastName = user.lastName,
@@ -53,7 +53,7 @@ namespace API.Services
 
             return new UserDto
             {
-                Id = user.Id,
+                id = user.Id,
                 email = user.email,
                 firstName = user.firstName,
                 lastName = user.lastName,

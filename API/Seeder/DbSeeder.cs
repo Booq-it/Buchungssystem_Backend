@@ -14,7 +14,7 @@ public class DbSeeder
     {
         if (!context.Users.Any(u => u.role == 2))
         {
-            CreatePasswordHash("admin123", out byte[] passwordHash, out byte[] passwordSalt);
+            CreatePasswordHash("admin", out byte[] passwordHash, out byte[] passwordSalt);
 
             var adminUser = new User
             {

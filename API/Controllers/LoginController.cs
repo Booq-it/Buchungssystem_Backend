@@ -33,12 +33,38 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
-            User u = await _authService.LoginAsync(dto);
+            var u = await _authService.LoginAsync(dto);
             
             if (u == null)
                 return Ok(-1);
             
-            return Ok(new { Guid = u.Id, email = u.email, firstName = u.firstName, lastName = u.lastName, role = u.role});
+            return Ok(u);
+        }
+
+        [HttpPost("ChangeUserInfo")]
+        public async Task<IActionResult> ChangeUserInfo(ChangeUserInfoDto dto)
+        {
+            if (await _authService.ChangeUserInformation(dto.id, dto.email, dto.firstName, dto.lastName))
+            {
+                return Ok("User information was changed successfully!");
+            }
+            else
+            {
+                return Ok(-1);   
+            }
+        }
+
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto dto)
+        {
+            if (await _authService.ChangeUserPassword(dto.id, dto.oldPassword, dto.newPassword))
+            {
+                return Ok("Password was changed successfully!");
+            }
+            else
+            {
+                return Ok(-1);  
+            }
         }
     }
 }

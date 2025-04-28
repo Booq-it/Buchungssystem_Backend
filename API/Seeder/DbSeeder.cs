@@ -1,5 +1,8 @@
-﻿using API.Models;
+﻿using System.Security.Cryptography;
+using System.Text;
+using API.Models;
 using API.Data;
+using API.Services;
 using Humanizer;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,9 +10,27 @@ namespace API.Seeder;
 
 public class DbSeeder
 {
-    
     public static void Seed(BackendDbContext context)
     {
+        if (!context.Users.Any(u => u.role == 2))
+        {
+            CreatePasswordHash("admin123", out byte[] passwordHash, out byte[] passwordSalt);
+
+            var adminUser = new User
+            {
+                email = "admin",
+                firstName = "Admin",
+                lastName = "User",
+                passwordHash = passwordHash,
+                passwordSalt = passwordSalt,
+                role = 2
+            };
+
+            context.Users.Add(adminUser);
+            context.SaveChanges();
+        }
+
+        
         var movies = new List<Movie>
             {
                 new Movie
@@ -58,13 +79,13 @@ public class DbSeeder
                 },
                 new Movie
                 {
-                    name = "Matrix",
-                    posterUrl = "https://image.tmdb.org/t/p/w500/7u3pxc0K1wx32IleAkLv78MKgrw.jpg",
-                    genre = "Science Fiction, Action",
-                    director = "Lana und Lilly Wachowski",
-                    duration = 136,
+                    name = "Pulp Fiction",
+                    posterUrl = "https://image.tmdb.org/t/p/w500/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg",
+                    genre = "Krimi, Drama",
+                    director = "Quentin Tarantino",
+                    duration = 154,
                     fsk = 16,
-                    description = "Ein Computerprogrammierer erfährt, dass die Realität, wie er sie kennt, in Wirklichkeit eine komplexe Computersimulation ist, und schließt sich einem Widerstand an, um die Menschheit zu befreien.",
+                    description = "Die Leben von zwei Auftragskillern, einem Boxer, der Frau eines Gangsterbosses und zwei Kleinganoven verflechten sich in vier Geschichten von Gewalt und Erlösung im kriminellen Untergrund von Los Angeles.",
                     isFeatured = false
                 }
             };
@@ -142,12 +163,121 @@ public class DbSeeder
                     }
                     todayShowings.Add(show);
                 }
+                
+                for (int j = 0; j < 3; j++)
+                {
+                    var timeTomorrow = DateTime.Today.AddDays(1).AddHours(12 + j * 4);
+
+                    var show = new Showing
+                    {
+                        is3D = j % 2 == 0,
+                        basePrice = (j % 2 == 0) ? 13.2 : 11.9,
+                        date = timeTomorrow,
+                        Movie = moviesFromDb[i],
+                        CinemaRoom = roomsFromDb[i],
+                        Seats = new List<ShowingSeat>()
+                    };
+
+                    for (char row = 'A'; row <= 'E'; row++)
+                    {
+                        for (int place = 1; place <= 10; place++)
+                        {
+                            string type = row == 'A' ? "Ermäßigt" :
+                                row == 'E' ? "Premium" : "Regulär";
+
+                            double price = row == 'A' ? -1.7 :
+                                row == 'E' ? 1.8 : 0;
+
+                            show.Seats.Add(new ShowingSeat()
+                            {
+                                seatRow = row,
+                                seatNumber = place,
+                                type = type,
+                                additionalPrice = price,
+                                isAvailable = true,
+                                Showing = show
+                            });
+                        }
+                    }
+                    tomorrowShowings.Add(show);
+                }
+                
+                for (int j = 0; j < 3; j++)
+                {
+                    var timeAfterTomorrow = DateTime.Today.AddDays(2).AddHours(12 + j * 4);
+
+                    var show = new Showing
+                    {
+                        is3D = j % 2 == 0,
+                        basePrice = (j % 2 == 0) ? 13.2 : 11.9,
+                        date = timeAfterTomorrow,
+                        Movie = moviesFromDb[i],
+                        CinemaRoom = roomsFromDb[i],
+                        Seats = new List<ShowingSeat>()
+                    };
+
+                    for (char row = 'A'; row <= 'E'; row++)
+                    {
+                        for (int place = 1; place <= 10; place++)
+                        {
+                            string type = row == 'A' ? "Ermäßigt" :
+                                row == 'E' ? "Premium" : "Regulär";
+
+                            double price = row == 'A' ? -1.7 :
+                                row == 'E' ? 1.8 : 0;
+
+                            show.Seats.Add(new ShowingSeat()
+                            {
+                                seatRow = row,
+                                seatNumber = place,
+                                type = type,
+                                additionalPrice = price,
+                                isAvailable = true,
+                                Showing = show
+                            });
+                        }
+                    }
+                    afterTomorrowShowings.Add(show);
+                }
             }
             
-            context.Showings.AddRange(todayShowings);
             
+            context.Showings.AddRange(todayShowings);
+            context.Showings.AddRange(tomorrowShowings);
+            context.Showings.AddRange(afterTomorrowShowings);
             context.SaveChanges();
         }
-        
+        else
+        {
+            var allShows = context.Showings.OrderBy(s => s.Id).ToList();
+
+            int index = 0;
+            foreach (var show in allShows)
+            {
+                int groupIndex = index % 3;
+                int dayOffset = index / 15;
+
+                var date = DateTime.Today.AddDays(dayOffset);
+
+                if (groupIndex == 0)
+                    show.date = date.AddHours(12);
+                else if (groupIndex == 1)
+                    show.date = date.AddHours(15).AddMinutes(30);
+                else if (groupIndex == 2)
+                    show.date = date.AddHours(19);
+
+                index++;
+            }
+
+            context.SaveChanges();
+        }
     }
+    
+    private static void CreatePasswordHash(string password, out byte[] hash, out byte[] salt)
+    {
+        using var hmac = new HMACSHA512();
+        salt = hmac.Key;
+        hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+    }
+
 }

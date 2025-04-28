@@ -100,7 +100,8 @@ namespace API.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     BookingDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    price = table.Column<int>(type: "INTEGER", nullable: false),
+                    price = table.Column<double>(type: "REAL", nullable: false),
+                    isCancelled = table.Column<bool>(type: "INTEGER", nullable: false),
                     UserId = table.Column<int>(type: "INTEGER", nullable: false),
                     ShowingId = table.Column<int>(type: "INTEGER", nullable: false)
                 },

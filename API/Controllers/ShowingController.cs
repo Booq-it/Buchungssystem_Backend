@@ -22,7 +22,7 @@ namespace API.Controllers
             var showings = await _showingService.GetAllShowings();
 
             if (showings == null)
-                return NotFound("No movies found!");
+                return Ok(-1);
             
             return Ok(showings);
         }
@@ -33,9 +33,42 @@ namespace API.Controllers
             var showings = await _showingService.GetShowingsForDay(date);
                 
             if (showings == null)
-                return NotFound("No showings for that day!");
+                return Ok(-1);
             
             return Ok(showings);
+        }
+
+        [HttpGet("GetShowingsByMovieId")]
+        public async Task<IActionResult> GetShowingsByMovieId([FromQuery] int movieId)
+        {
+            var showings = await _showingService.GetShowingsForMovie(movieId);
+            
+            if (showings == null)
+                return Ok(-1);
+            
+            return Ok(showings);
+        }
+
+        [HttpGet("GetSeatForShowing")]
+        public async Task<IActionResult> GetSeatForShowing([FromQuery] GetSeatDto dto)
+        {
+            var seat = await _showingService.GetSeat(dto.id, dto.showingId);
+            
+            if(seat == null)
+                return Ok(-1);
+            
+            return Ok(seat);
+        }
+        
+        [HttpGet("GetShowingById")]
+        public async Task<IActionResult> GetShowingById([FromQuery] int showingId)
+        {
+            var showing = await _showingService.GetShowingById(showingId);
+            
+            if(showing == null)
+                return Ok(-1);
+            
+            return Ok(showing);
         }
     }
 }

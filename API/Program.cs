@@ -17,6 +17,7 @@ builder.Services.AddScoped<ICinemaRoomService, CinemaRoomService>();
 builder.Services.AddScoped<IMovieService, MovieService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IShowingService, ShowingService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

@@ -14,4 +14,5 @@ public class BackendDbContext : DbContext
     public DbSet<Showing> Showings { get; set; }
     public DbSet<Movie> Movies { get; set; }
     public DbSet<Booking> Bookings { get; set; }
+    
 }

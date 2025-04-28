@@ -14,11 +14,26 @@ namespace API.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllUsersAsync();
+            
+            if (users == null)
+                return Ok(-1);
+            
             return Ok(users);
+        }
+
+        [HttpGet("GetUserById")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            var user = await _userService.GetUserById(id);
+            
+            if (user == null)
+                return Ok(-1);
+            
+            return Ok(user);
         }
     }
 }

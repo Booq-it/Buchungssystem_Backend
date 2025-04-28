@@ -32,8 +32,11 @@ namespace API.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("price")
+                    b.Property<bool>("isCancelled")
                         .HasColumnType("INTEGER");
+
+                    b.Property<double>("price")
+                        .HasColumnType("REAL");
 
                     b.HasKey("Id");
 

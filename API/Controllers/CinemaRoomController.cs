@@ -28,5 +28,16 @@ namespace API.Controllers
             return Ok(rooms);
         }
         
+        [HttpGet("GetCinemaRoomById")]
+        public async Task<IActionResult> GetCinemaRoomById([FromQuery] int id)
+        {
+            var room = await _cinemaRoomService.GetCinemaRoomById(id);
+            
+            if (room == null)
+                return Ok(-1);
+                
+            return Ok(room);
+        }
+        
     }
 }

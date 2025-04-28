@@ -2,6 +2,6 @@
 
 public class GetSeatDto
 {
-    public string seatNumber { get; set; }
-    public int roomId { get; set; }
+    public int id { get; set; }
+    public int showingId { get; set; }
 }

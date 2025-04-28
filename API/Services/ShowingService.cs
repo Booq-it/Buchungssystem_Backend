@@ -9,6 +9,9 @@ namespace API.Services
     {
         public Task<List<ShowingDto>> GetAllShowings();
         public Task<List<ShowingDto>> GetShowingsForDay(DateOnly date);
+        public Task<List<ShowingDto>> GetShowingsForMovie(int movieId);
+        public Task<ShowingSeatDto> GetSeat(int id, int showingId);
+        public Task<ShowingDto> GetShowingById(int id);
     }
     
     public class ShowingService : IShowingService
@@ -56,6 +59,7 @@ namespace API.Services
         public async Task<List<ShowingDto>> GetShowingsForDay(DateOnly date)
         {
             var shows =  await _db.Showings
+                .Include(s => s.Seats)
                 .Where(s => DateOnly.FromDateTime(s.date) == date)
                 .ToListAsync();
 
@@ -71,10 +75,104 @@ namespace API.Services
                     date = show.date,
                     cinemaRoomId = show.CinemaRoomId,
                     movieId = show.MovieId,
+                    seats = show.Seats.Select(s => new ShowingSeatDto
+                    {
+                        id = s.Id,
+                        seatRow = s.seatRow,
+                        seatNumber = s.seatNumber,
+                        type = s.type,
+                        additionalPrice = s.additionalPrice,
+                        isAvailable = s.isAvailable
+                    }).ToList()
                 });
             }
             
             return showings;
+        }
+        
+        public async Task<List<ShowingDto>> GetShowingsForMovie(int movieId)
+        {
+            var shows =  await _db.Showings
+                .Include(s => s.Seats)
+                .Where(s => s.MovieId == movieId)
+                .ToListAsync();
+            
+            var showings = new List<ShowingDto>();
+            
+            foreach (var show in shows)
+            {
+                showings.Add(new ShowingDto
+                {
+                    id = show.Id,
+                    is3D = show.is3D,
+                    basePrice = show.basePrice,
+                    date = show.date,
+                    cinemaRoomId = show.CinemaRoomId,
+                    movieId = show.MovieId,
+                    seats = show.Seats.Select(s => new ShowingSeatDto
+                    {
+                        id = s.Id,
+                        seatRow = s.seatRow,
+                        seatNumber = s.seatNumber,
+                        type = s.type,
+                        additionalPrice = s.additionalPrice,
+                        isAvailable = s.isAvailable
+                    }).ToList()
+                });
+            }
+            
+            return showings;
+        }
+
+        public async Task<ShowingSeatDto> GetSeat(int id, int showingId)
+        {
+            var seat = await _db.Showings
+                .Where(s => s.Id == showingId)
+                .Include(s => s.Seats)
+                .SelectMany(s => s.Seats)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            
+            if (seat == null)
+                return null;
+
+            return new ShowingSeatDto
+            {
+                id = seat.Id,
+                seatRow = seat.seatRow,
+                seatNumber = seat.seatNumber,
+                type = seat.type,
+                additionalPrice = seat.additionalPrice,
+                isAvailable = seat.isAvailable
+            };
+        }
+        
+        public async Task<ShowingDto> GetShowingById(int id)
+        {
+            var show = await _db.Showings
+                .Include(s => s.Seats)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            
+            if (show == null)
+                return null;
+
+            return new ShowingDto
+            {
+                id = show.Id,
+                is3D = show.is3D,
+                basePrice = show.basePrice,
+                date = show.date,
+                cinemaRoomId = show.CinemaRoomId,
+                movieId = show.MovieId,
+                seats = show.Seats.Select(s => new ShowingSeatDto
+                {
+                    id = s.Id,
+                    seatRow = s.seatRow,
+                    seatNumber = s.seatNumber,
+                    type = s.type,
+                    additionalPrice = s.additionalPrice,
+                    isAvailable = s.isAvailable
+                }).ToList()
+            };
         }
     }
 }

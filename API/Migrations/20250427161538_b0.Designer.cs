@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(BackendDbContext))]
-    [Migration("20250426194501_b0")]
+    [Migration("20250427161538_b0")]
     partial class b0
     {
         /// <inheritdoc />
@@ -35,8 +35,11 @@ namespace API.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("price")
+                    b.Property<bool>("isCancelled")
                         .HasColumnType("INTEGER");
+
+                    b.Property<double>("price")
+                        .HasColumnType("REAL");
 
                     b.HasKey("Id");
 

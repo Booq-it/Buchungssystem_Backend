@@ -7,6 +7,7 @@ namespace API.Services
     public interface IMovieService
     {
         Task<List<MovieDto>> GetAllMovies();
+        Task<MovieDto> GetMovieById(int id);
     }
     
     public class MovieService : IMovieService
@@ -42,6 +43,27 @@ namespace API.Services
             }
             
             return moviesDtos;
+        }
+
+        public async Task<MovieDto> GetMovieById(int id)
+        {
+            var movie = await _db.Movies.FirstOrDefaultAsync(m => m.Id == id);
+            
+            if (movie == null)
+                return null;
+
+            return new MovieDto
+            {
+                id = movie.Id,
+                name = movie.name,
+                posterUrl = movie.posterUrl,
+                genre = movie.genre,
+                director = movie.director,
+                duration = movie.duration,
+                fsk = movie.fsk,
+                description = movie.description,
+                isFeatured = movie.isFeatured
+            };
         }
     }
 }

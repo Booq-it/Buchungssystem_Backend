@@ -8,6 +8,7 @@ namespace API.Services
     public interface ICinemaRoomService
     {
         Task<List<CinemaRoomDto>> GetAllCinemaRooms();
+        Task<CinemaRoomDto> GetCinemaRoomById(int id);
     }
     
     public class CinemaRoomService : ICinemaRoomService
@@ -42,5 +43,22 @@ namespace API.Services
             return cinemaRooms;
         }
         
+        public async Task<CinemaRoomDto> GetCinemaRoomById(int id)
+        {
+            var room = await _db.CinemaRooms
+                .Include(s => s.Showings)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            
+            if (room == null)
+                return null;
+            
+            return new CinemaRoomDto
+            {
+                id = room.Id,
+                name = room.name,
+                totalRows = room.totalRows,
+                seatsPerRow = room.seatsPerRow
+            };;
+        }
     }    
 }

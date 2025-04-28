@@ -9,6 +9,5 @@ public class User
     public byte[] passwordHash { get; set; }
     public byte[] passwordSalt { get; set; }
     public int role { get; set; } = 1; // 1 = User, 2 = Admin
-    
-    public ICollection<Booking> Bookings { get; set; }
+    public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 }

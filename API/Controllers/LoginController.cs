@@ -34,6 +34,10 @@ namespace API.Controllers
         public async Task<IActionResult> Login(LoginDto dto)
         {
             User u = await _authService.LoginAsync(dto);
+            
+            if (u == null)
+                return Ok(-1);
+            
             return Ok(new { Guid = u.Id, email = u.email, firstName = u.firstName, lastName = u.lastName, role = u.role});
         }
     }

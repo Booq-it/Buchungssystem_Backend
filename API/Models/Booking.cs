@@ -4,8 +4,9 @@ public class Booking
 {
     public int Id { get; set; }
     public DateTime BookingDate { get; set; }
-    public int price { get; set; }
-
+    public double price { get; set; }
+    public bool isCancelled { get; set; }
+    
     public int UserId { get; set; }
     public User User { get; set; }
 

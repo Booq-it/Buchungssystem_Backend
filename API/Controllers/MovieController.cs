@@ -25,5 +25,16 @@ namespace API.Controllers
 
             return Ok(movies);
         }
+        
+        [HttpGet("GetMovieById")]
+        public async Task<IActionResult> GetMovieById([FromQuery] int id)
+        {
+            var movie = await _movieService.GetMovieById(id);
+
+            if (movie == null)
+                return Ok(-1);
+
+            return Ok(movie);
+        }
     }
 }

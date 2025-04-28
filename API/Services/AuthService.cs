@@ -9,6 +9,7 @@ namespace API.Services
     public interface IAuthService
     {
         Task<bool> RegisterAsync(RegisterDto dto);
+        Task<bool> CreateAdminUser(string email, string password, string fName, string lName);
         Task<User> LoginAsync(LoginDto dto);
     }
 
@@ -35,6 +36,29 @@ namespace API.Services
                 passwordSalt = salt,
                 firstName = dto.firstName,
                 lastName = dto.lastName
+            };
+
+            _dbContext.Add(user);
+            await _dbContext.SaveChangesAsync();
+            
+            return true;
+        }
+
+        public async Task<bool> CreateAdminUser(string email, string password, string fName, string lName)
+        {
+            if (await _dbContext.Users.AnyAsync(u => u.email == email))
+                return false;
+
+            CreatePasswordHash(password, out byte[] hash, out byte[] salt);
+
+            var user = new User
+            {
+                email = email,
+                passwordHash = hash,
+                passwordSalt = salt,
+                firstName = fName,
+                lastName = lName,
+                role = 2
             };
 
             _dbContext.Add(user);

@@ -29,7 +29,7 @@ namespace API.Controllers
             }
         }
         
-        [HttpPost("EditMovie")]
+        [HttpPut("EditMovie")]
         public IActionResult EditMovie(MovieInputDto dto)
         {
             if (_adminService.EditMovie(dto))
@@ -42,7 +42,7 @@ namespace API.Controllers
             }
         }
         
-        [HttpPost("DeleteMovie")]
+        [HttpDelete("DeleteMovie")]
         public IActionResult EditMovie(int id)
         {
             if (_adminService.DeleteMovie(id))
@@ -68,7 +68,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("EditShowing")]
+        [HttpPut("EditShowing")]
         public IActionResult EditShowing(ShowingInputDto dto, int id)
         {
             if (_adminService.EditShowing(dto, id))
@@ -81,7 +81,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("DeleteShowing")]
+        [HttpDelete("DeleteShowing")]
         public IActionResult DeleteShowing(int id)
         {
             if (_adminService.DeleteShowing(id))

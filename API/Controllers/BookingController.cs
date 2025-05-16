@@ -16,7 +16,7 @@ namespace API.Controllers
             _bookingService = bookingService;
         }
         
-        [HttpGet("MakeBooking")]
+        [HttpPost("MakeBooking")]
         public async Task<IActionResult> MakeBooking([FromQuery] BookingInputDto dto)
         {
             if (await _bookingService.MakeBooking(dto))

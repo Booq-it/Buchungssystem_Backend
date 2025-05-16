@@ -105,8 +105,8 @@ public class DbSeeder
                 var room = new CinemaRoom
                 {
                     name = $"Saal {i+1}",
-                    totalRows = 5,
-                    seatsPerRow = 10
+                    totalRows = 10,
+                    seatsPerRow = 16
                 };
                 rooms.Add(room);
             }
@@ -140,9 +140,10 @@ public class DbSeeder
                         Seats = new List<ShowingSeat>()
                     };
 
-                    for (char row = 'A'; row <= 'E'; row++)
+                    // left block
+                    for (char row = 'A'; row <= 'J'; row++)
                     {
-                        for (int place = 1; place <= 10; place++)
+                        for (int place = 1; place <= 3; place++)
                         {
                             string type = row == 'A' ? "Ermäßigt" :
                                 row == 'E' ? "Premium" : "Regulär";
@@ -161,6 +162,53 @@ public class DbSeeder
                             });
                         }
                     }
+                    
+                    // middle block
+                    for (char row = 'A'; row <= 'J'; row++)
+                    {
+                        for (int place = 4; place <= 13; place++)
+                        {
+                            string type = row == 'A' ? "Ermäßigt" :
+                                row == 'E' ? "Premium" : "Regulär";
+
+                            double price = row == 'A' ? -1.7 :
+                                row == 'E' ? 1.8 : 0;
+
+                            show.Seats.Add(new ShowingSeat()
+                            {
+                                seatRow = row,
+                                seatNumber = place,
+                                type = type,
+                                additionalPrice = price,
+                                isAvailable = true,
+                                Showing = show
+                            });
+                        }
+                    }
+                    
+                    // right block
+                    for (char row = 'A'; row <= 'J'; row++)
+                    {
+                        for (int place = 14; place <= 16; place++)
+                        {
+                            string type = row == 'A' ? "Ermäßigt" :
+                                row == 'E' ? "Premium" : "Regulär";
+
+                            double price = row == 'A' ? -1.7 :
+                                row == 'E' ? 1.8 : 0;
+
+                            show.Seats.Add(new ShowingSeat()
+                            {
+                                seatRow = row,
+                                seatNumber = place,
+                                type = type,
+                                additionalPrice = price,
+                                isAvailable = true,
+                                Showing = show
+                            });
+                        }
+                    }
+                    
                     todayShowings.Add(show);
                 }
                 

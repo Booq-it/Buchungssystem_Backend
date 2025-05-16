@@ -41,7 +41,7 @@ namespace API.Controllers
             return Ok(u);
         }
 
-        [HttpPost("ChangeUserInfo")]
+        [HttpPatch("ChangeUserInfo")]
         public async Task<IActionResult> ChangeUserInfo(ChangeUserInfoDto dto)
         {
             if (await _authService.ChangeUserInformation(dto.id, dto.email, dto.firstName, dto.lastName))
@@ -54,7 +54,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("ChangePassword")]
+        [HttpPatch("ChangePassword")]
         public async Task<IActionResult> ChangePassword(ChangePasswordDto dto)
         {
             if (await _authService.ChangeUserPassword(dto.id, dto.oldPassword, dto.newPassword))

@@ -29,6 +29,17 @@ namespace API.Controllers
             }
         }
         
+        [HttpPatch("CancelBooking")]
+        public async Task<IActionResult> CancelBooking([FromQuery] int bookingId)
+        {
+            if (await _bookingService.CancelBooking(bookingId))
+            {
+                return Ok();
+            }
+            
+            return Ok(-1);
+        }
+        
         [HttpGet("GetAllBookings")]
         public async Task<IActionResult> GetAllBookings()
         {

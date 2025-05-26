@@ -46,7 +46,7 @@ public class DbSeeder
                 },
                 new Movie
                 {
-                    name = "Der Herr der Ringe: Die Gefährten",
+                    name = "Der Herr der Ringe: Die zwei Türme",
                     posterUrl = "https://image.tmdb.org/t/p/w500/5VTN0pR8gcqV3EPUHHfMGnJYN9L.jpg",
                     genre = "Fantasy, Abenteuer",
                     director = "Peter Jackson",
@@ -140,6 +140,8 @@ public class DbSeeder
                         Seats = new List<ShowingSeat>()
                     };
 
+                    Console.WriteLine(moviesFromDb[i].name);
+                    
                     // left block
                     for (char row = 'A'; row <= 'J'; row++)
                     {

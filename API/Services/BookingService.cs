@@ -9,6 +9,7 @@ namespace API.Services
     public interface IBookingService
     {
         public Task<bool> MakeBooking(BookingInputDto bookingInputDto);
+        public Task<bool> CancelBooking(int bookingId);
         public Task<List<BookingOutputDto>> GetAllBookings();
         public Task<BookingOutputDto> GetBookingById(int id);
         public Task<List<BookingOutputDto>> GetBookingsByUserId(int userId);
@@ -84,6 +85,29 @@ namespace API.Services
             return true;
         }
         
+        public async Task<bool> CancelBooking(int bookingId)
+        {
+            var booking = await _db.Bookings
+                .Include(s => s.Seats)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
+
+            if (booking == null || booking.isCancelled)
+                return false;
+
+            booking.isCancelled = true;
+
+            foreach (var seat in booking.Seats)
+            {
+                seat.isAvailable = true;
+            }
+
+            _db.Bookings.Update(booking);
+            await _db.SaveChangesAsync();
+
+            Console.WriteLine("Booking cancelled");
+            return true;
+        }
+        
         public async Task<List<BookingOutputDto>> GetAllBookings()
         {
             var bookings =  await _db.Bookings
@@ -121,6 +145,8 @@ namespace API.Services
             return bookingOutputDtos;
         }
         
+        
+        
         public async Task<BookingOutputDto> GetBookingById(int id)
         {
             var booking = await _db.Bookings
@@ -157,6 +183,7 @@ namespace API.Services
                 .Include(u => u.User)
                 .Include(seats => seats.Seats)
                 .Where(b => userId == b.UserId)
+                .OrderBy(s => s.Showing.date)
                 .ToListAsync();
             
             var bookingOutputDtos = new List<BookingOutputDto>();

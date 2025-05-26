@@ -47,22 +47,19 @@ namespace API.Services
 
                 if (showing == null)
                     return false;
-
-                double price = showing.basePrice;
-
+                
                 foreach (var seat in seats)
                 {
                     if (!seat.isAvailable)
                         return false;
 
-                    price += seat.additionalPrice;
                     seat.isAvailable = false;
                 }
 
                 var booking = new Booking
                 {
                     BookingDate = DateTime.Now,
-                    price = price,
+                    price = bookingInputDto.price,
                     isCancelled = false,
                     UserId = bookingInputDto.userId,
                     ShowingId = bookingInputDto.showingId,

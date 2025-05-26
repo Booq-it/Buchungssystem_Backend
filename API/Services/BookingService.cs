@@ -99,6 +99,7 @@ namespace API.Services
             }
 
             _db.Bookings.Update(booking);
+            _db.Seats.UpdateRange(booking.Seats);
             await _db.SaveChangesAsync();
 
             Console.WriteLine("Booking cancelled");
@@ -141,8 +142,6 @@ namespace API.Services
 
             return bookingOutputDtos;
         }
-        
-        
         
         public async Task<BookingOutputDto> GetBookingById(int id)
         {

@@ -6,6 +6,7 @@ namespace API.InputDto
     {
         public int userId { get; set; }
         public int showingId { get; set; }
+        public double price { get; set; }
         
         public ICollection<int> seatIds { get; set; } 
     }

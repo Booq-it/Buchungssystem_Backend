@@ -4,3 +4,4 @@ bin/
 .vs/
 
 *.db
+*.DS_Store

@@ -106,5 +106,18 @@ namespace API.Controllers
                 return Ok(-1);
             }
         }
+        
+        [HttpPost("AddBookingByGuest")]
+        public async Task<IActionResult> AddBookingByGuest(GuestBookingInput dto)
+        {
+            if (await _adminService.AddGuestBooking(dto))
+            {
+                return Ok("Added guest booking successfully!");
+            }
+            else
+            {
+                return Ok(-1);
+            }
+        }
     }
 }

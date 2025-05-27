@@ -29,6 +29,17 @@ namespace API.Controllers
             }
         }
         
+        [HttpPost("MakeGuestBooking")]
+        public async Task<IActionResult> MakeGuestBooking([FromQuery] GuestBookingInput dto)
+        {
+            if (await _bookingService.MakeGuestBooking(dto))
+            {
+                return Ok();
+            }
+            
+            return Ok(-1);
+        }
+        
         [HttpPatch("CancelBooking")]
         public async Task<IActionResult> CancelBooking([FromQuery] int bookingId)
         {

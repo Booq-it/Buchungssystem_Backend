@@ -9,24 +9,24 @@ namespace API.Services
     public interface IBookingService
     {
         public Task<bool> MakeBooking(BookingInputDto bookingInputDto);
+        public Task<bool> MakeGuestBooking(GuestBookingInput bookingInputDto);
         public Task<bool> CancelBooking(int bookingId);
         public Task<List<BookingOutputDto>> GetAllBookings();
         public Task<BookingOutputDto> GetBookingById(int id);
         public Task<List<BookingOutputDto>> GetBookingsByUserId(int userId);
     }
-    
+
     public class BookingService : IBookingService
     {
         private readonly BackendDbContext _db;
-        
+
         public BookingService(BackendDbContext db)
         {
             _db = db;
         }
-        
+
         public async Task<bool> MakeBooking(BookingInputDto bookingInputDto)
         {
-            
             using var transaction = await _db.Database.BeginTransactionAsync();
 
             try
@@ -34,20 +34,20 @@ namespace API.Services
                 var seats = await _db.Seats
                     .Where(s => bookingInputDto.seatIds.Contains(s.Id))
                     .ToListAsync();
-        
+
                 var user = await _db.Users
                     .Include(b => b.Bookings)
                     .FirstOrDefaultAsync(u => u.Id == bookingInputDto.userId);
-        
+
                 if (user == null)
                     return false;
-        
+
                 var showing = await _db.Showings
                     .FirstOrDefaultAsync(s => s.Id == bookingInputDto.showingId);
 
                 if (showing == null)
                     return false;
-                
+
                 foreach (var seat in seats)
                 {
                     if (!seat.isAvailable)
@@ -65,12 +65,11 @@ namespace API.Services
                     ShowingId = bookingInputDto.showingId,
                     Seats = seats
                 };
-                
+
                 await _db.Bookings.AddAsync(booking);
                 await _db.SaveChangesAsync();
 
                 await transaction.CommitAsync();
-                Console.WriteLine("Booking created");
             }
             catch (Exception e)
             {
@@ -81,8 +80,59 @@ namespace API.Services
 
             return true;
         }
-        
-        public async Task<bool> CancelBooking(int bookingId)
+
+        public async Task<bool> MakeGuestBooking(GuestBookingInput bookingInputDto)
+        {
+            using var transaction = await _db.Database.BeginTransactionAsync();
+
+            try
+            {
+                var seats = await _db.Seats
+                    .Where(s => bookingInputDto.seatIds.Contains(s.Id))
+                    .ToListAsync();
+                
+                var showing = await _db.Showings
+                    .FirstOrDefaultAsync(s => s.Id == bookingInputDto.showingId);
+
+                if (showing == null)
+                    return false;
+
+                foreach (var seat in seats)
+                {
+                    if (!seat.isAvailable)
+                        return false;
+
+                    seat.isAvailable = false;
+                }
+
+                var booking = new GuestBooking()
+                {
+                    BookingDate = DateTime.Now,
+                    Price = bookingInputDto.price,
+                    IsCancelled = false,
+                    GuestFirstName = bookingInputDto.GuestFirstName,
+                    GuestLastName = bookingInputDto.GuestLastName,
+                    GuestEmail = bookingInputDto.GuestEmail,
+                    ShowingId = bookingInputDto.showingId,
+                    Seats = seats
+                };
+
+                await _db.GuestBookings.AddAsync(booking);
+                await _db.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                Console.WriteLine($"Error during guest booking: {e.Message}");
+                return false;
+            }
+
+            return true;
+        }
+
+    public async Task<bool> CancelBooking(int bookingId)
         {
             var booking = await _db.Bookings
                 .Include(s => s.Seats)

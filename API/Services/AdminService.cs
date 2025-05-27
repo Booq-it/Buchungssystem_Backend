@@ -15,6 +15,7 @@ namespace API.Services
         bool EditShowing(ShowingInputDto dto, int id);
         bool DeleteShowing(int id);
         Task<bool> AddBookingByUserId(BookingInputDto dto);
+        Task<bool> AddGuestBooking(GuestBookingInput dto);
     }
     
     public class AdminService : IAdminService
@@ -167,6 +168,13 @@ namespace API.Services
             
             return false;
         }
+
+        public async Task<bool> AddGuestBooking(GuestBookingInput dto)
+        {
+            if (await _bookingService.MakeGuestBooking(dto))
+                return true;
+
+            return false;
+        }
     }
-    
 }

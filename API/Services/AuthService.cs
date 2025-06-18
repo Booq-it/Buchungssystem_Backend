@@ -27,7 +27,7 @@ namespace API.Services
 
         public async Task<bool> RegisterAsync(RegisterDto dto)
         {
-            if (await _dbContext.Users.AnyAsync(u => u.email == dto.email))
+            if (await _dbContext.users.AnyAsync(u => u.email == dto.email))
                 return false;
 
             CreatePasswordHash(dto.password, out byte[] hash, out byte[] salt);
@@ -49,7 +49,7 @@ namespace API.Services
 
         public async Task<bool> CreateAdminUser(string email, string password, string fName, string lName)
         {
-            if (await _dbContext.Users.AnyAsync(u => u.email == email))
+            if (await _dbContext.users.AnyAsync(u => u.email == email))
                 return false;
 
             CreatePasswordHash(password, out byte[] hash, out byte[] salt);
@@ -72,26 +72,26 @@ namespace API.Services
 
         public async Task<UserDto> LoginAsync(LoginDto dto)
         {
-            var user = await _dbContext.Users
-                .Include(b => b.Bookings)
+            var user = await _dbContext.users
+                .Include(b => b.bookings)
                 .FirstOrDefaultAsync(u => u.email == dto.email);
             if (user == null || !VerifyPasswordHash(dto.password, user.passwordHash, user.passwordSalt))
                 return null;
 
             return new UserDto
             {
-                id = user.Id,
+                id = user.id,
                 email = user.email,
                 firstName = user.firstName,
                 lastName = user.lastName,
                 role = user.role,
-                bookingIds = user.Bookings.Select(s => s.Id).ToList()
+                bookingIds = user.bookings.Select(s => s.id).ToList()
             };
         }
         
         public async Task<bool> ChangeUserInformation(int userId, string email, string firstName, string lastName)
         {
-            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await _dbContext.users.FirstOrDefaultAsync(u => u.id == userId);
             if (user == null)
                 return false;
             
@@ -107,7 +107,7 @@ namespace API.Services
 
         public async Task<bool> ChangeUserPassword(int userId, string oldPassword, string newPassword)
         {
-            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await _dbContext.users.FirstOrDefaultAsync(u => u.id == userId);
             if (user == null)
                 return false;
 

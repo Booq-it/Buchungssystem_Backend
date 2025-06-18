@@ -51,7 +51,7 @@ namespace API.Services
 
         public bool EditMovie(MovieInputDto dto)
         {
-            var movie = _db.Movies.FirstOrDefault(m => m.Id == dto.id);
+            var movie = _db.movies.FirstOrDefault(m => m.id == dto.id);
             
             if(movie == null)
                 return false;
@@ -73,12 +73,12 @@ namespace API.Services
         
         public bool DeleteMovie(int id)
         {
-            var movie = _db.Movies.FirstOrDefault(m => m.Id == id);
+            var movie = _db.movies.FirstOrDefault(m => m.id == id);
             
             if (movie == null)
                 return false;
             
-            _db.Movies.Remove(movie);
+            _db.movies.Remove(movie);
             _db.SaveChanges();
             
             return true;
@@ -86,18 +86,18 @@ namespace API.Services
 
         public bool AddShowing(ShowingInputDto dto)
         {
-            var movieFromDb = _db.Movies.FirstOrDefault(m => m.Id == dto.movieId);
+            var movieFromDb = _db.movies.FirstOrDefault(m => m.id == dto.movieId);
             
-            var cinemaRoomFromDb = _db.CinemaRooms.FirstOrDefault(m => m.Id == dto.cinemaRoomId);
+            var cinemaRoomFromDb = _db.cinemaRooms.FirstOrDefault(m => m.id == dto.cinemaRoomId);
             
             var show = new Showing
             {
                 is3D = dto.is3D,
                 basePrice = dto.basePrice,
                 date = dto.date,
-                Movie = movieFromDb,
-                CinemaRoom = cinemaRoomFromDb,
-                Seats = new List<ShowingSeat>()
+                movie = movieFromDb,
+                cinemaRoom = cinemaRoomFromDb,
+                seats = new List<ShowingSeat>()
             };
 
             for (char row = 'A'; row <= 'E'; row++)
@@ -110,14 +110,14 @@ namespace API.Services
                     double price = row == 'A' ? -1.7 :
                         row == 'E' ? 1.8 : 0;
 
-                    show.Seats.Add(new ShowingSeat()
+                    show.seats.Add(new ShowingSeat()
                     {
                         seatRow = row,
                         seatNumber = place,
                         type = type,
                         additionalPrice = price,
                         isAvailable = true,
-                        Showing = show
+                        showing = show
                     });
                 }
             }
@@ -130,8 +130,8 @@ namespace API.Services
 
         public bool EditShowing(ShowingInputDto dto, int id)
         {
-            var showing = _db.Showings
-                .FirstOrDefault(s => s.Id == id);
+            var showing = _db.showings
+                .FirstOrDefault(s => s.id == id);
             
             if (showing == null)
                 return false;
@@ -139,8 +139,8 @@ namespace API.Services
             showing.is3D = dto.is3D;
             showing.basePrice = dto.basePrice;
             showing.date = dto.date;
-            showing.Movie = _db.Movies.FirstOrDefault(m => m.Id == dto.movieId);
-            showing.CinemaRoom = _db.CinemaRooms.FirstOrDefault(m => m.Id == dto.cinemaRoomId);
+            showing.movie = _db.movies.FirstOrDefault(m => m.id == dto.movieId);
+            showing.cinemaRoom = _db.cinemaRooms.FirstOrDefault(m => m.id == dto.cinemaRoomId);
             
             _db.Update(showing);
             _db.SaveChanges();
@@ -150,12 +150,12 @@ namespace API.Services
         
         public bool DeleteShowing(int id)
         {
-            var showing = _db.Showings.FirstOrDefault(s => s.Id == id);
+            var showing = _db.showings.FirstOrDefault(s => s.id == id);
             
             if (showing == null)
                 return false;
             
-            _db.Showings.Remove(showing);
+            _db.showings.Remove(showing);
             _db.SaveChanges();
             
             return true;

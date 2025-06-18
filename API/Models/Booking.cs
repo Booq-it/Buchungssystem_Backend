@@ -2,18 +2,18 @@
 
 public class Booking
 {
-    public int Id { get; set; }
-    public DateTime BookingDate { get; set; }
+    public int id { get; set; }
+    public DateTime bookingDate { get; set; }
     public double price { get; set; }
     public bool isCancelled { get; set; }
     
-    public int UserId { get; set; }
-    public User User { get; set; }
+    public int userId { get; set; }
+    public User user { get; set; }
 
-    public int ShowingId { get; set; }
-    public Showing Showing { get; set; }
+    public int showingId { get; set; }
+    public Showing showing { get; set; }
     
-    public ICollection<ShowingSeat> Seats { get; set; } 
+    public ICollection<ShowingSeat> seats { get; set; } 
     
 }
     

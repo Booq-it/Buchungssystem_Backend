@@ -22,8 +22,8 @@ namespace API.Services
         
         public async Task<List<CinemaRoomDto>> GetAllCinemaRooms()
         {
-            var rooms = await _db.CinemaRooms
-                .Include(s => s.Showings)
+            var rooms = await _db.cinemaRooms
+                .Include(s => s.showings)
                 .ToListAsync();
 
             var cinemaRooms = new List<CinemaRoomDto>();
@@ -32,7 +32,7 @@ namespace API.Services
             {
                 var dto = new CinemaRoomDto
                 {
-                    id = room.Id,
+                    id = room.id,
                     name = room.name,
                     totalRows = room.totalRows,
                     seatsPerRow = room.seatsPerRow
@@ -45,16 +45,16 @@ namespace API.Services
         
         public async Task<CinemaRoomDto> GetCinemaRoomById(int id)
         {
-            var room = await _db.CinemaRooms
-                .Include(s => s.Showings)
-                .FirstOrDefaultAsync(s => s.Id == id);
+            var room = await _db.cinemaRooms
+                .Include(s => s.showings)
+                .FirstOrDefaultAsync(s => s.id == id);
             
             if (room == null)
                 return null;
             
             return new CinemaRoomDto
             {
-                id = room.Id,
+                id = room.id,
                 name = room.name,
                 totalRows = room.totalRows,
                 seatsPerRow = room.seatsPerRow

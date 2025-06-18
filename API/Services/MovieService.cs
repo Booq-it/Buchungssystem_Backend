@@ -21,7 +21,7 @@ namespace API.Services
 
         public async Task<List<MovieDto>> GetAllMovies()
         {
-            var movies = await _db.Movies.ToListAsync();
+            var movies = await _db.movies.ToListAsync();
 
             var moviesDtos = new List<MovieDto>();
             
@@ -29,7 +29,7 @@ namespace API.Services
             {
                 var dto = new MovieDto()
                 {
-                    id = movie.Id,
+                    id = movie.id,
                     name = movie.name,
                     posterUrl = movie.posterUrl,
                     genre = movie.genre,
@@ -47,14 +47,14 @@ namespace API.Services
 
         public async Task<MovieDto> GetMovieById(int id)
         {
-            var movie = await _db.Movies.FirstOrDefaultAsync(m => m.Id == id);
+            var movie = await _db.movies.FirstOrDefaultAsync(m => m.id == id);
             
             if (movie == null)
                 return null;
 
             return new MovieDto
             {
-                id = movie.Id,
+                id = movie.id,
                 name = movie.name,
                 posterUrl = movie.posterUrl,
                 genre = movie.genre,

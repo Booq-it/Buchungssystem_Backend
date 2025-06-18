@@ -2,17 +2,17 @@ namespace API.Models;
 
 public class GuestBooking
 {
-    public int Id { get; set; }
-    public DateTime BookingDate { get; set; }
-    public double Price { get; set; }
-    public bool IsCancelled { get; set; }
+    public int id { get; set; }
+    public DateTime bookingDate { get; set; }
+    public double price { get; set; }
+    public bool isCancelled { get; set; }
     
-    public string GuestFirstName { get; set; }
-    public string GuestLastName { get; set; }
-    public string GuestEmail { get; set; }
+    public string guestFirstName { get; set; }
+    public string guestLastName { get; set; }
+    public string guestEmail { get; set; }
     
-    public int ShowingId { get; set; }
-    public Showing Showing { get; set; }
+    public int showingId { get; set; }
+    public Showing showing { get; set; }
     
-    public ICollection<ShowingSeat> Seats { get; set; }
+    public ICollection<ShowingSeat> seats { get; set; }
 }

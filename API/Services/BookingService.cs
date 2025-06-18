@@ -31,19 +31,19 @@ namespace API.Services
 
             try
             {
-                var seats = await _db.Seats
-                    .Where(s => bookingInputDto.seatIds.Contains(s.Id))
+                var seats = await _db.seats
+                    .Where(s => bookingInputDto.seatIds.Contains(s.id))
                     .ToListAsync();
 
-                var user = await _db.Users
-                    .Include(b => b.Bookings)
-                    .FirstOrDefaultAsync(u => u.Id == bookingInputDto.userId);
+                var user = await _db.users
+                    .Include(b => b.bookings)
+                    .FirstOrDefaultAsync(u => u.id == bookingInputDto.userId);
 
                 if (user == null)
                     return false;
 
-                var showing = await _db.Showings
-                    .FirstOrDefaultAsync(s => s.Id == bookingInputDto.showingId);
+                var showing = await _db.showings
+                    .FirstOrDefaultAsync(s => s.id == bookingInputDto.showingId);
 
                 if (showing == null)
                     return false;
@@ -58,15 +58,15 @@ namespace API.Services
 
                 var booking = new Booking
                 {
-                    BookingDate = DateTime.Now,
+                    bookingDate = DateTime.Now,
                     price = bookingInputDto.price,
                     isCancelled = false,
-                    UserId = bookingInputDto.userId,
-                    ShowingId = bookingInputDto.showingId,
-                    Seats = seats
+                    userId = bookingInputDto.userId,
+                    showingId = bookingInputDto.showingId,
+                    seats = seats
                 };
 
-                await _db.Bookings.AddAsync(booking);
+                await _db.bookings.AddAsync(booking);
                 await _db.SaveChangesAsync();
 
                 await transaction.CommitAsync();
@@ -87,12 +87,12 @@ namespace API.Services
 
             try
             {
-                var seats = await _db.Seats
-                    .Where(s => bookingInputDto.seatIds.Contains(s.Id))
+                var seats = await _db.seats
+                    .Where(s => bookingInputDto.seatIds.Contains(s.id))
                     .ToListAsync();
                 
-                var showing = await _db.Showings
-                    .FirstOrDefaultAsync(s => s.Id == bookingInputDto.showingId);
+                var showing = await _db.showings
+                    .FirstOrDefaultAsync(s => s.id == bookingInputDto.showingId);
 
                 if (showing == null)
                     return false;
@@ -107,17 +107,17 @@ namespace API.Services
 
                 var booking = new GuestBooking()
                 {
-                    BookingDate = DateTime.Now,
-                    Price = bookingInputDto.price,
-                    IsCancelled = false,
-                    GuestFirstName = bookingInputDto.GuestFirstName,
-                    GuestLastName = bookingInputDto.GuestLastName,
-                    GuestEmail = bookingInputDto.GuestEmail,
-                    ShowingId = bookingInputDto.showingId,
-                    Seats = seats
+                    bookingDate = DateTime.Now,
+                    price = bookingInputDto.price,
+                    isCancelled = false,
+                    guestFirstName = bookingInputDto.GuestFirstName,
+                    guestLastName = bookingInputDto.GuestLastName,
+                    guestEmail = bookingInputDto.GuestEmail,
+                    showingId = bookingInputDto.showingId,
+                    seats = seats
                 };
 
-                await _db.GuestBookings.AddAsync(booking);
+                await _db.guestBookings.AddAsync(booking);
                 await _db.SaveChangesAsync();
 
                 await transaction.CommitAsync();
@@ -134,22 +134,22 @@ namespace API.Services
 
     public async Task<bool> CancelBooking(int bookingId)
         {
-            var booking = await _db.Bookings
-                .Include(s => s.Seats)
-                .FirstOrDefaultAsync(b => b.Id == bookingId);
+            var booking = await _db.bookings
+                .Include(s => s.seats)
+                .FirstOrDefaultAsync(b => b.id == bookingId);
 
             if (booking == null || booking.isCancelled)
                 return false;
 
             booking.isCancelled = true;
 
-            foreach (var seat in booking.Seats)
+            foreach (var seat in booking.seats)
             {
                 seat.isAvailable = true;
             }
 
-            _db.Bookings.Update(booking);
-            _db.Seats.UpdateRange(booking.Seats);
+            _db.bookings.Update(booking);
+            _db.seats.UpdateRange(booking.seats);
             await _db.SaveChangesAsync();
 
             Console.WriteLine("Booking cancelled");
@@ -158,10 +158,10 @@ namespace API.Services
         
         public async Task<List<BookingOutputDto>> GetAllBookings()
         {
-            var bookings =  await _db.Bookings
-                .Include(s => s.Showing)
-                .Include(u => u.User)
-                .Include(seats => seats.Seats)
+            var bookings =  await _db.bookings
+                .Include(s => s.showing)
+                .Include(u => u.user)
+                .Include(seats => seats.seats)
                 .ToListAsync();
             
             var bookingOutputDtos = new List<BookingOutputDto>();
@@ -170,16 +170,16 @@ namespace API.Services
             {
                 bookingOutputDtos.Add(new BookingOutputDto
                 {
-                    id = booking.Id,
-                    bookingDate = booking.BookingDate,
+                    id = booking.id,
+                    bookingDate = booking.bookingDate,
                     price = booking.price,
                     isCancelled = booking.isCancelled,
-                    userId = booking.UserId,
-                    showingId = booking.ShowingId,
+                    userId = booking.userId,
+                    showingId = booking.showingId,
                     
-                    seats = booking.Seats.Select(s => new ShowingSeatDto
+                    seats = booking.seats.Select(s => new ShowingSeatDto
                     {
-                        id = s.Id,
+                        id = s.id,
                         seatRow = s.seatRow,
                         seatNumber = s.seatNumber,
                         type = s.type,
@@ -195,24 +195,24 @@ namespace API.Services
         
         public async Task<BookingOutputDto> GetBookingById(int id)
         {
-            var booking = await _db.Bookings
-                .Include(s => s.Showing)
-                .Include(u => u.User)
-                .Include(seats => seats.Seats)
-                .FirstOrDefaultAsync(s => s.Id == id);
+            var booking = await _db.bookings
+                .Include(s => s.showing)
+                .Include(u => u.user)
+                .Include(seats => seats.seats)
+                .FirstOrDefaultAsync(s => s.id == id);
 
             return new BookingOutputDto
             {
-                id = booking.Id,
-                bookingDate = booking.BookingDate,
+                id = booking.id,
+                bookingDate = booking.bookingDate,
                 price = booking.price,
                 isCancelled = booking.isCancelled,
-                userId = booking.UserId,
-                showingId = booking.ShowingId,
+                userId = booking.userId,
+                showingId = booking.showingId,
                     
-                seats = booking.Seats.Select(s => new ShowingSeatDto
+                seats = booking.seats.Select(s => new ShowingSeatDto
                 {
-                    id = s.Id,
+                    id = s.id,
                     seatRow = s.seatRow,
                     seatNumber = s.seatNumber,
                     type = s.type,
@@ -224,12 +224,12 @@ namespace API.Services
 
         public async Task<List<BookingOutputDto>> GetBookingsByUserId(int userId)
         {
-            var bookings =  await _db.Bookings
-                .Include(s => s.Showing)
-                .Include(u => u.User)
-                .Include(seats => seats.Seats)
-                .Where(b => userId == b.UserId)
-                .OrderBy(s => s.Showing.date)
+            var bookings =  await _db.bookings
+                .Include(s => s.showing)
+                .Include(u => u.user)
+                .Include(seats => seats.seats)
+                .Where(b => userId == b.userId)
+                .OrderBy(s => s.showing.date)
                 .ToListAsync();
             
             var bookingOutputDtos = new List<BookingOutputDto>();
@@ -238,16 +238,16 @@ namespace API.Services
             {
                 bookingOutputDtos.Add(new BookingOutputDto
                 {
-                    id = booking.Id,
-                    bookingDate = booking.BookingDate,
+                    id = booking.id,
+                    bookingDate = booking.bookingDate,
                     price = booking.price,
                     isCancelled = booking.isCancelled,
-                    userId = booking.UserId,
-                    showingId = booking.ShowingId,
+                    userId = booking.userId,
+                    showingId = booking.showingId,
                     
-                    seats = booking.Seats.Select(s => new ShowingSeatDto
+                    seats = booking.seats.Select(s => new ShowingSeatDto
                     {
-                        id = s.Id,
+                        id = s.id,
                         seatRow = s.seatRow,
                         seatNumber = s.seatNumber,
                         type = s.type,

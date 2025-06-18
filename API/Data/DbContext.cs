@@ -8,11 +8,11 @@ public class BackendDbContext : DbContext
 {
     public BackendDbContext(DbContextOptions<BackendDbContext> options) : base(options) { }
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<CinemaRoom> CinemaRooms { get; set; }
-    public DbSet<ShowingSeat> Seats { get; set; }
-    public DbSet<Showing> Showings { get; set; }
-    public DbSet<Movie> Movies { get; set; }
-    public DbSet<Booking> Bookings { get; set; }
-    public DbSet<GuestBooking> GuestBookings { get; set; }
+    public DbSet<User> users { get; set; }
+    public DbSet<CinemaRoom> cinemaRooms { get; set; }
+    public DbSet<ShowingSeat> seats { get; set; }
+    public DbSet<Showing> showings { get; set; }
+    public DbSet<Movie> movies { get; set; }
+    public DbSet<Booking> bookings { get; set; }
+    public DbSet<GuestBooking> guestBookings { get; set; }
 }

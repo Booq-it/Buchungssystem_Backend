@@ -4,7 +4,7 @@ namespace API.Models;
 
 public class ShowingSeat
 {
-    public int Id { get; set; } 
+    public int id { get; set; } 
     public char seatRow { get; set; }
     
     public int seatNumber { get; set; }
@@ -12,7 +12,7 @@ public class ShowingSeat
     public double additionalPrice { get; set; }
     public bool isAvailable { get; set; }
     
-    public int ShowingId { get; set; }
-    public Showing Showing { get; set; }
+    public int showingId { get; set; }
+    public Showing showing { get; set; }
     
 }

@@ -2,7 +2,7 @@
 
 public class Movie
 {
-    public int Id { get; set; }
+    public int id { get; set; }
     public string name { get; set; }
     public string posterUrl { get; set; }
     public string genre { get; set; }
@@ -13,6 +13,6 @@ public class Movie
     
     public bool isFeatured { get; set; }
     
-    public ICollection<Showing> Showings { get; set; }
+    public ICollection<Showing> showings { get; set; }
     
 }

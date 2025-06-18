@@ -23,8 +23,8 @@ namespace API.Services
 
         public async Task<List<UserDto>> GetAllUsersAsync()
         {
-            var users = await _db.Users
-                .Include(b => b.Bookings)
+            var users = await _db.users
+                .Include(b => b.bookings)
                 .ToListAsync();
 
             var userDtos = new List<UserDto>();
@@ -33,12 +33,12 @@ namespace API.Services
             {
                 userDtos.Add(new UserDto
                 {
-                    id = user.Id,
+                    id = user.id,
                     email = user.email,
                     firstName = user.firstName,
                     lastName = user.lastName,
                     role = user.role, 
-                    bookingIds = user.Bookings.Select(s => s.Id).ToList()
+                    bookingIds = user.bookings.Select(s => s.id).ToList()
                 });
             }
 
@@ -47,18 +47,18 @@ namespace API.Services
 
         public async Task<UserDto> GetUserById(int id)
         {
-            var user = await _db.Users
-                .Include(b => b.Bookings)
-                .FirstOrDefaultAsync(u => u.Id == id);
+            var user = await _db.users
+                .Include(b => b.bookings)
+                .FirstOrDefaultAsync(u => u.id == id);
 
             return new UserDto
             {
-                id = user.Id,
+                id = user.id,
                 email = user.email,
                 firstName = user.firstName,
                 lastName = user.lastName,
                 role = user.role,
-                bookingIds = user.Bookings.Select(s => s.Id).ToList()
+                bookingIds = user.bookings.Select(s => s.id).ToList()
             };
         }
     }

@@ -25,8 +25,8 @@ namespace API.Services
 
         public async Task<List<ShowingDto>> GetAllShowings()
         {
-            var shows = await _db.Showings
-                .Include(s => s.Seats)
+            var shows = await _db.showings
+                .Include(s => s.seats)
                 .ToListAsync();
             
             var showings = new List<ShowingDto>();
@@ -35,15 +35,15 @@ namespace API.Services
             {
                 showings.Add(new ShowingDto
                 {
-                    id = show.Id,
+                    id = show.id,
                     is3D = show.is3D,
                     basePrice = show.basePrice,
                     date = show.date,
-                    cinemaRoomId = show.CinemaRoomId,
-                    movieId = show.MovieId,
-                    seats = show.Seats.Select(s => new ShowingSeatDto
+                    cinemaRoomId = show.cinemaRoomId,
+                    movieId = show.movieId,
+                    seats = show.seats.Select(s => new ShowingSeatDto
                     {
-                        id = s.Id,
+                        id = s.id,
                         seatRow = s.seatRow,
                         seatNumber = s.seatNumber,
                         type = s.type,
@@ -58,8 +58,8 @@ namespace API.Services
         
         public async Task<List<ShowingDto>> GetShowingsForDay(DateOnly date)
         {
-            var shows =  await _db.Showings
-                .Include(s => s.Seats)
+            var shows =  await _db.showings
+                .Include(s => s.seats)
                 .Where(s => DateOnly.FromDateTime(s.date) == date)
                 .ToListAsync();
 
@@ -69,15 +69,15 @@ namespace API.Services
             {
                 showings.Add(new ShowingDto
                 {
-                    id = show.Id,
+                    id = show.id,
                     is3D = show.is3D,
                     basePrice = show.basePrice,
                     date = show.date,
-                    cinemaRoomId = show.CinemaRoomId,
-                    movieId = show.MovieId,
-                    seats = show.Seats.Select(s => new ShowingSeatDto
+                    cinemaRoomId = show.cinemaRoomId,
+                    movieId = show.movieId,
+                    seats = show.seats.Select(s => new ShowingSeatDto
                     {
-                        id = s.Id,
+                        id = s.id,
                         seatRow = s.seatRow,
                         seatNumber = s.seatNumber,
                         type = s.type,
@@ -92,9 +92,9 @@ namespace API.Services
         
         public async Task<List<ShowingDto>> GetShowingsForMovie(int movieId)
         {
-            var shows =  await _db.Showings
-                .Include(s => s.Seats)
-                .Where(s => s.MovieId == movieId)
+            var shows =  await _db.showings
+                .Include(s => s.seats)
+                .Where(s => s.movieId == movieId)
                 .ToListAsync();
             
             var showings = new List<ShowingDto>();
@@ -103,15 +103,15 @@ namespace API.Services
             {
                 showings.Add(new ShowingDto
                 {
-                    id = show.Id,
+                    id = show.id,
                     is3D = show.is3D,
                     basePrice = show.basePrice,
                     date = show.date,
-                    cinemaRoomId = show.CinemaRoomId,
-                    movieId = show.MovieId,
-                    seats = show.Seats.Select(s => new ShowingSeatDto
+                    cinemaRoomId = show.cinemaRoomId,
+                    movieId = show.movieId,
+                    seats = show.seats.Select(s => new ShowingSeatDto
                     {
-                        id = s.Id,
+                        id = s.id,
                         seatRow = s.seatRow,
                         seatNumber = s.seatNumber,
                         type = s.type,
@@ -126,18 +126,18 @@ namespace API.Services
 
         public async Task<ShowingSeatDto> GetSeat(int id, int showingId)
         {
-            var seat = await _db.Showings
-                .Where(s => s.Id == showingId)
-                .Include(s => s.Seats)
-                .SelectMany(s => s.Seats)
-                .FirstOrDefaultAsync(s => s.Id == id);
+            var seat = await _db.showings
+                .Where(s => s.id == showingId)
+                .Include(s => s.seats)
+                .SelectMany(s => s.seats)
+                .FirstOrDefaultAsync(s => s.id == id);
             
             if (seat == null)
                 return null;
 
             return new ShowingSeatDto
             {
-                id = seat.Id,
+                id = seat.id,
                 seatRow = seat.seatRow,
                 seatNumber = seat.seatNumber,
                 type = seat.type,
@@ -148,24 +148,24 @@ namespace API.Services
         
         public async Task<ShowingDto> GetShowingById(int id)
         {
-            var show = await _db.Showings
-                .Include(s => s.Seats)
-                .FirstOrDefaultAsync(s => s.Id == id);
+            var show = await _db.showings
+                .Include(s => s.seats)
+                .FirstOrDefaultAsync(s => s.id == id);
             
             if (show == null)
                 return null;
 
             return new ShowingDto
             {
-                id = show.Id,
+                id = show.id,
                 is3D = show.is3D,
                 basePrice = show.basePrice,
                 date = show.date,
-                cinemaRoomId = show.CinemaRoomId,
-                movieId = show.MovieId,
-                seats = show.Seats.Select(s => new ShowingSeatDto
+                cinemaRoomId = show.cinemaRoomId,
+                movieId = show.movieId,
+                seats = show.seats.Select(s => new ShowingSeatDto
                 {
-                    id = s.Id,
+                    id = s.id,
                     seatRow = s.seatRow,
                     seatNumber = s.seatNumber,
                     type = s.type,

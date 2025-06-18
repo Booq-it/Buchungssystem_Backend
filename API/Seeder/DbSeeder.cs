@@ -12,7 +12,7 @@ public class DbSeeder
 {
     public static void Seed(BackendDbContext context)
     {
-        if (!context.Users.Any(u => u.role == 2))
+        if (!context.users.Any(u => u.role == 2))
         {
             CreatePasswordHash("admin", out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -26,7 +26,7 @@ public class DbSeeder
                 role = 2
             };
 
-            context.Users.Add(adminUser);
+            context.users.Add(adminUser);
             context.SaveChanges();
         }
 
@@ -90,15 +90,15 @@ public class DbSeeder
                 }
             };
         
-        if (!context.Movies.Any())
+        if (!context.movies.Any())
         {
-            context.Movies.AddRange(movies);
+            context.movies.AddRange(movies);
             context.SaveChanges();
         }
         
         var rooms = new List<CinemaRoom>();
         
-        if (!context.CinemaRooms.Any())
+        if (!context.cinemaRooms.Any())
         {
             for (int i = 0; i < 5; i++)
             {
@@ -111,7 +111,7 @@ public class DbSeeder
                 rooms.Add(room);
             }
         
-            context.CinemaRooms.AddRange(rooms);
+            context.cinemaRooms.AddRange(rooms);
             context.SaveChanges();   
         }
         
@@ -119,10 +119,10 @@ public class DbSeeder
         var tomorrowShowings = new List<Showing>();
         var afterTomorrowShowings = new List<Showing>();
         
-        if (!context.Showings.Any())
+        if (!context.showings.Any())
         {
-            var moviesFromDb = context.Movies.ToList();
-            var roomsFromDb = context.CinemaRooms.ToList();
+            var moviesFromDb = context.movies.ToList();
+            var roomsFromDb = context.cinemaRooms.ToList();
 
             for (int i = 0; i < 5; i++)
             {
@@ -135,9 +135,9 @@ public class DbSeeder
                         is3D = j % 2 == 0,
                         basePrice = (j % 2 == 0) ? 13.2 : 11.9,
                         date = timeToday,
-                        Movie = moviesFromDb[i],
-                        CinemaRoom = roomsFromDb[i],
-                        Seats = new List<ShowingSeat>()
+                        movie = moviesFromDb[i],
+                        cinemaRoom = roomsFromDb[i],
+                        seats = new List<ShowingSeat>()
                     };
 
                     Console.WriteLine(moviesFromDb[i].name);
@@ -153,14 +153,14 @@ public class DbSeeder
                             double price = row == 'A' ? -1.7 :
                                 row == 'E' ? 1.8 : 0;
 
-                            show.Seats.Add(new ShowingSeat()
+                            show.seats.Add(new ShowingSeat()
                             {
                                 seatRow = row,
                                 seatNumber = place,
                                 type = type,
                                 additionalPrice = price,
                                 isAvailable = true,
-                                Showing = show
+                                showing = show
                             });
                         }
                     }
@@ -176,14 +176,14 @@ public class DbSeeder
                             double price = row == 'A' ? -1.7 :
                                 row == 'E' ? 1.8 : 0;
 
-                            show.Seats.Add(new ShowingSeat()
+                            show.seats.Add(new ShowingSeat()
                             {
                                 seatRow = row,
                                 seatNumber = place,
                                 type = type,
                                 additionalPrice = price,
                                 isAvailable = true,
-                                Showing = show
+                                showing = show
                             });
                         }
                     }
@@ -199,14 +199,14 @@ public class DbSeeder
                             double price = row == 'A' ? -1.7 :
                                 row == 'E' ? 1.8 : 0;
 
-                            show.Seats.Add(new ShowingSeat()
+                            show.seats.Add(new ShowingSeat()
                             {
                                 seatRow = row,
                                 seatNumber = place,
                                 type = type,
                                 additionalPrice = price,
                                 isAvailable = true,
-                                Showing = show
+                                showing = show
                             });
                         }
                     }
@@ -223,9 +223,9 @@ public class DbSeeder
                         is3D = j % 2 == 0,
                         basePrice = (j % 2 == 0) ? 13.2 : 11.9,
                         date = timeTomorrow,
-                        Movie = moviesFromDb[i],
-                        CinemaRoom = roomsFromDb[i],
-                        Seats = new List<ShowingSeat>()
+                        movie = moviesFromDb[i],
+                        cinemaRoom = roomsFromDb[i],
+                        seats = new List<ShowingSeat>()
                     };
 
                     for (char row = 'A'; row <= 'E'; row++)
@@ -238,14 +238,14 @@ public class DbSeeder
                             double price = row == 'A' ? -1.7 :
                                 row == 'E' ? 1.8 : 0;
 
-                            show.Seats.Add(new ShowingSeat()
+                            show.seats.Add(new ShowingSeat()
                             {
                                 seatRow = row,
                                 seatNumber = place,
                                 type = type,
                                 additionalPrice = price,
                                 isAvailable = true,
-                                Showing = show
+                                showing = show
                             });
                         }
                     }
@@ -261,9 +261,9 @@ public class DbSeeder
                         is3D = j % 2 == 0,
                         basePrice = (j % 2 == 0) ? 13.2 : 11.9,
                         date = timeAfterTomorrow,
-                        Movie = moviesFromDb[i],
-                        CinemaRoom = roomsFromDb[i],
-                        Seats = new List<ShowingSeat>()
+                        movie = moviesFromDb[i],
+                        cinemaRoom = roomsFromDb[i],
+                        seats = new List<ShowingSeat>()
                     };
 
                     for (char row = 'A'; row <= 'E'; row++)
@@ -276,14 +276,14 @@ public class DbSeeder
                             double price = row == 'A' ? -1.7 :
                                 row == 'E' ? 1.8 : 0;
 
-                            show.Seats.Add(new ShowingSeat()
+                            show.seats.Add(new ShowingSeat()
                             {
                                 seatRow = row,
                                 seatNumber = place,
                                 type = type,
                                 additionalPrice = price,
                                 isAvailable = true,
-                                Showing = show
+                                showing = show
                             });
                         }
                     }
@@ -292,14 +292,14 @@ public class DbSeeder
             }
             
             
-            context.Showings.AddRange(todayShowings);
-            context.Showings.AddRange(tomorrowShowings);
-            context.Showings.AddRange(afterTomorrowShowings);
+            context.showings.AddRange(todayShowings);
+            context.showings.AddRange(tomorrowShowings);
+            context.showings.AddRange(afterTomorrowShowings);
             context.SaveChanges();
         }
         else
         {
-            var allShows = context.Showings.OrderBy(s => s.Id).ToList();
+            var allShows = context.showings.OrderBy(s => s.id).ToList();
 
             int index = 0;
             foreach (var show in allShows)
